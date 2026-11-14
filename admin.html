@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8"><title>ThaiMed Queue — เจ้าหน้าที่</title><meta name="viewport" content="width=device-width, initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@1,600&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><script src="config.js"></script></head>
+<body>
+<div id="login" class="card" style="max-width:380px;margin:60px auto">
+ <div style="text-align:center"><img class="emb" style="width:64px;height:64px" src="logo.png" alt="ตราสัญลักษณ์ รพ.สต.บ้านห้วยผึ้ง"></div>
+ <h2 style="text-align:center;margin-top:8px">ThaiMed Queue — เจ้าหน้าที่</h2>
+ <label class="f" for="pin">รหัส PIN</label><input class="i" id="pin" type="password" inputmode="numeric" onkeydown="if(event.key==='Enter')login()">
+ <div id="lerr" class="msg err" hidden></div><button class="btn" style="width:100%;margin-top:12px" onclick="login()">เข้าสู่ระบบ</button>
+ <p style="text-align:center;margin:12px 0 0"><a href="index.html" style="color:var(--g)">← กลับหน้าประชาชน</a></p>
+</div>
+
+<div id="app" class="app" hidden>
+ <aside class="side" id="tabs">
+  <div class="lg">ThaiMed Queue</div>
+  <button data-t="bk" class="on">หน้าหลัก / รายการจอง</button><button data-t="sv">บริการและตาราง</button><button data-t="cl">วันปิดให้บริการ</button><button data-t="st">รายงานสถิติ</button><button data-t="se">ตั้งค่า</button>
+  <a href="index.html">ไปหน้าประชาชน</a><button onclick="logout()">ออกจากระบบ</button>
+  <div class="bt"><img class="emb" src="logo.png" alt=""><span>รพ.สต.<br>บ้านห้วยผึ้ง</span></div>
+ </aside>
+ <main class="main">
+  <div id="toast" class="msg" hidden></div>
+
+  <section id="bk"><h1>แดชบอร์ดภาพรวม</h1>
+   <div class="kpis"><div class="k" style="background:#dcebd0"><b id="k0">0</b>รายการที่แสดง</div><div class="k" style="background:#fbe8c0"><b id="k1">0</b>รอตรวจสอบ</div><div class="k" style="background:#dbe8fb"><b id="k2">0</b>ยืนยันแล้ว</div><div class="k" style="background:#e5dcf0"><b id="k3">0</b>เข้ารับบริการแล้ว</div></div>
+   <div class="card"><div class="row">
+    <div><label class="f">วันที่</label><input class="i" type="date" id="fdate"></div>
+    <div><label class="f">สถานะ</label><select class="i" id="fstat"><option value="">ทุกสถานะ</option><option value="Pending">รอตรวจสอบ</option><option value="Confirmed">ยืนยันแล้ว</option><option value="Completed">เข้ารับบริการแล้ว</option><option value="Cancelled">ยกเลิก</option><option value="No-show">ไม่มาตามนัด</option></select></div>
+    <div><button class="btn" style="width:100%" onclick="loadBk()">ค้นหา</button></div><div><button class="btn alt" style="width:100%" onclick="today()">วันนี้</button></div></div></div>
+   <div class="card scroll" style="padding:0"><table><thead><tr><th>เลขที่จอง</th><th>วัน-เวลา</th><th>บริการ</th><th>ผู้รับบริการ</th><th>อาการ</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="bkb"></tbody></table><p id="bkn" class="hint" style="padding:0 12px"></p></div></section>
+
+  <section id="sv" hidden><h1>บริการและตาราง</h1><div class="card hint">ติ๊กวันที่เปิดให้บริการ เลือกช่วงเวลา และกำหนดจำนวนคิวสูงสุดต่อวันของแต่ละบริการ</div>
+   <div id="svl"></div><button class="btn" style="width:100%" onclick="addSvc()">+ เพิ่มบริการใหม่</button></section>
+
+  <section id="cl" hidden><h1>วันปิดให้บริการ</h1><div class="card"><div class="row">
+    <div><label class="f">วันที่</label><input class="i" type="date" id="cdate"></div>
+    <div><label class="f">เหตุผล</label><input class="i" id="creason" maxlength="100" placeholder="เช่น วันหยุดราชการ อบรมเจ้าหน้าที่"></div>
+    <div><button class="btn" style="width:100%" onclick="addClosed()">ปิดวันนี้</button></div></div></div>
+   <div class="card scroll" style="padding:0"><table><thead><tr><th>วันที่</th><th>เหตุผล</th><th></th></tr></thead><tbody id="clb"></tbody></table></div></section>
+
+  <section id="st" hidden><h1>รายงานสถิติ</h1><div class="card"><div class="row"><div><label class="f">เดือน</label><input class="i" type="month" id="smonth"></div><div><button class="btn" style="width:100%" onclick="loadStats()">ดูรายงาน</button></div></div></div>
+   <div id="sres"></div></section>
+
+  <section id="se" hidden><h1>ตั้งค่า</h1><div class="card">
+    <label class="f">ชื่อคลินิก</label><input class="i" id="s_ClinicName">
+    <label class="f">เวลารอบเช้า (คั่นด้วยจุลภาค เช่น 08:30,09:30)</label><input class="i" id="s_AM_SLOTS">
+    <label class="f">เวลารอบบ่าย</label><input class="i" id="s_PM_SLOTS">
+    <div class="row"><div><label class="f">จองล่วงหน้าได้สูงสุด (วัน)</label><input class="i" id="s_MaxAdvanceDays" inputmode="numeric"></div><div><label class="f">ต้องจองล่วงหน้าอย่างน้อย (วัน)</label><input class="i" id="s_MinAdvanceDays" inputmode="numeric"></div></div>
+    <button class="btn" style="width:100%;margin-top:14px" onclick="saveSettings()">บันทึกการตั้งค่า</button></div>
+   <div class="card"><h2>เปลี่ยนรหัส PIN เจ้าหน้าที่</h2><div class="hint">ตัวเลข 4-8 หลัก ใช้ร่วมกันทุกคน เปลี่ยนแล้วใช้ PIN ใหม่ได้ทันที</div>
+    <div class="row"><div><label class="f" for="np1">PIN ใหม่</label><input class="i" id="np1" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password"></div>
+    <div><label class="f" for="np2">พิมพ์ PIN ใหม่อีกครั้ง</label><input class="i" id="np2" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password"></div></div>
+    <button class="btn" style="width:100%;margin-top:14px" onclick="changePin()">เปลี่ยนรหัส PIN</button></div></section>
+ </main>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const API=window.TMQ_API;
+const raw=(fn,...a)=>fetch(API,{method:'POST',body:JSON.stringify({fn:fn,args:a})}).then(r=>r.json()).then(j=>{if(!j.ok)throw new Error(String(j.error||'เกิดข้อผิดพลาด').replace(/^(Error|Exception):\s*/,''));return j.data;},()=>{throw new Error('เชื่อมต่อระบบไม่ได้ กรุณาลองใหม่อีกครั้ง');});
+let TOKEN=sessionStorage.getItem('tmq_t')||'';
+const call=(fn,...a)=>raw(fn,TOKEN,...a).catch(e=>{if(/เข้าสู่ระบบใหม่/.test(e.message))logout(true);throw e;});
+const ST={Pending:'รอตรวจสอบ',Confirmed:'ยืนยันแล้ว',Completed:'เข้ารับบริการแล้ว',Cancelled:'ยกเลิก','No-show':'ไม่มาตามนัด'};
+const DN=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+const thDate=d=>new Date(d+'T00:00:00').toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const iso=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+let tt;function toast(m,ok){const t=$('toast');t.textContent=m;t.className='msg '+(ok?'ok':'err');t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,4000);}
+const fail=e=>toast(e.message,false);
+
+function login(){$('lerr').hidden=true;raw('adminLogin',$('pin').value).then(t=>{TOKEN=t;sessionStorage.setItem('tmq_t',t);start();}).catch(e=>{$('lerr').textContent=e.message;$('lerr').hidden=false;});}
+function logout(expired){TOKEN='';sessionStorage.removeItem('tmq_t');$('app').hidden=true;$('login').hidden=false;$('pin').value='';if(expired===true){$('lerr').textContent='หมดเวลาการใช้งาน กรุณาเข้าสู่ระบบใหม่';$('lerr').hidden=false;}}
+function start(){$('login').hidden=true;$('app').hidden=false;$('fdate').value=iso();$('smonth').value=iso().slice(0,7);loadBk();}
+$('tabs').addEventListener('click',e=>{
+  const t=e.target.dataset&&e.target.dataset.t;if(!t)return;
+  document.querySelectorAll('#tabs button[data-t]').forEach(b=>b.className=b.dataset.t===t?'on':'');
+  ['bk','sv','cl','st','se'].forEach(s=>$(s).hidden=s!==t);
+  ({bk:loadBk,sv:loadSvc,cl:loadClosed,st:loadStats,se:loadSettings})[t]();
+});
+
+function today(){$('fdate').value=iso();loadBk();}
+function loadBk(){
+  call('adminGetBookings',{date:$('fdate').value,status:$('fstat').value}).then(l=>{
+    const n=s=>l.filter(b=>b.status===s).length;
+    $('k0').textContent=l.length;$('k1').textContent=n('Pending');$('k2').textContent=n('Confirmed');$('k3').textContent=n('Completed');
+    $('bkn').textContent=l.length?'':'ไม่พบรายการ';
+    $('bkb').innerHTML=l.map(b=>`<tr>
+     <td>${esc(b.id)}</td><td>${thDate(b.date)}<br>${esc(b.time)} น.</td><td>${esc(b.serviceName)}</td>
+     <td>${esc(b.name)}<br>โทร ${esc(b.phone)}${b.hn?'<br>HN '+esc(b.hn):''}</td><td>${esc(b.symptom)||'-'}</td>
+     <td><span class="badge ${esc(b.status)}">${ST[b.status]||esc(b.status)}</span>${b.adminNote?'<br><small>'+esc(b.adminNote)+'</small>':''}${b.resultNote?'<br><small>ผล: '+esc(b.resultNote)+'</small>':''}</td>
+     <td><input class="i" style="height:38px;margin-bottom:4px" id="n_${esc(b.id)}" placeholder="หมายเหตุ / ผลการให้บริการ">
+      <button class="sm ok" onclick="setSt('${esc(b.id)}','Confirmed')">อนุมัติ</button><button class="sm no" onclick="setSt('${esc(b.id)}','Cancelled')">ปฏิเสธ</button>
+      <button class="sm" onclick="setSt('${esc(b.id)}','Completed')">เสร็จสิ้น</button><button class="sm" onclick="setSt('${esc(b.id)}','No-show')">ไม่มาตามนัด</button></td></tr>`).join('');
+  }).catch(fail);
+}
+function setSt(id,s){call('adminUpdateStatus',id,s,$('n_'+id).value).then(()=>{toast('อัปเดตสถานะแล้ว',true);loadBk();}).catch(fail);}
+
+function svcRow(s){
+  const id=s.id||'';
+  return `<div class="card svr" data-id="${esc(id)}"><div class="row"><div><label class="f">ชื่อบริการ</label><input class="i f_name" value="${esc(s.name||'')}"></div><div><label class="f">รายละเอียด</label><input class="i f_desc" value="${esc(s.desc||'')}"></div></div>
+   <label class="f">วันให้บริการ</label><div class="days">${DN.map((n,i)=>`<label><input type="checkbox" class="f_day" value="${i}" ${(s.days||[1,2,3,4,5]).indexOf(i)>=0?'checked':''}>${n}</label>`).join('')}</div>
+   <div class="row"><div><label class="f">ช่วงเวลา</label><select class="i f_period">${[['ALL','ทั้งวัน'],['AM','เฉพาะช่วงเช้า'],['PM','เฉพาะช่วงบ่าย']].map(p=>`<option value="${p[0]}" ${s.period===p[0]?'selected':''}>${p[1]}</option>`).join('')}</select></div>
+   <div><label class="f">จำนวนต่อวัน</label><input class="i f_limit" inputmode="numeric" value="${s.limit==null?5:s.limit}"></div>
+   <div><label class="chk"><input type="checkbox" class="f_active" ${s.active!==false?'checked':''}>เปิดรับจอง</label></div></div>
+   <button class="sm ok" style="margin-top:10px" onclick="saveSvc(this)">บันทึก ${esc(id)}</button></div>`;
+}
+function loadSvc(){call('adminListServices').then(l=>$('svl').innerHTML=l.map(svcRow).join('')).catch(fail);}
+function addSvc(){$('svl').insertAdjacentHTML('beforeend',svcRow({}));}
+function saveSvc(btn){
+  const r=btn.closest('.svr'),q=c=>r.querySelector(c);
+  call('adminSaveService',{id:r.dataset.id,name:q('.f_name').value,desc:q('.f_desc').value,days:[...r.querySelectorAll('.f_day:checked')].map(x=>x.value).join(','),period:q('.f_period').value,limit:q('.f_limit').value,active:q('.f_active').checked})
+   .then(()=>{toast('บันทึกบริการแล้ว',true);loadSvc();}).catch(fail);
+}
+
+function loadClosed(){call('adminListClosed').then(l=>$('clb').innerHTML=l.map(c=>`<tr><td>${thDate(c.date)}</td><td>${esc(c.reason)}</td><td><button class="sm no" onclick="rmClosed('${c.date}')">ลบ</button></td></tr>`).join('')||'<tr><td colspan="3" class="hint">ยังไม่มีวันปิด</td></tr>').catch(fail);}
+function addClosed(){call('adminAddClosed',$('cdate').value,$('creason').value).then(()=>{toast('ปิดวันให้บริการแล้ว',true);loadClosed();}).catch(fail);}
+function rmClosed(d){call('adminRemoveClosed',d).then(()=>{toast('ลบวันปิดแล้ว',true);loadClosed();}).catch(fail);}
+
+function tbl(h,o,fmt){const k=Object.keys(o).sort();return `<div class="card scroll"><h2>${h}</h2><table><tbody>${k.map(x=>`<tr><td>${fmt?fmt(x):esc(x)}</td><td><b>${o[x]}</b></td></tr>`).join('')||'<tr><td class="hint">ไม่มีข้อมูล</td></tr>'}</tbody></table></div>`;}
+function loadStats(){
+  call('adminStats',$('smonth').value).then(s=>{
+    const k=Object.keys(s.byService),mx=Math.max(1,...Object.values(s.byService));
+    $('sres').innerHTML=`<div class="kpis"><div class="k" style="background:#dcebd0"><b>${s.total}</b>รายการจองทั้งเดือน</div></div>
+     <div class="card"><h2>จำนวนผู้รับบริการแยกตามบริการ (ไม่รวมยกเลิก)</h2><div class="bars">${k.map(n=>`<div>${s.byService[n]}<i style="height:${Math.round(s.byService[n]/mx*130)}px"></i></div>`).join('')}</div>
+     <div class="bars" style="height:auto;border:0;margin-top:6px">${k.map(n=>`<div style="font-weight:400;color:var(--mut)">${esc(n)}</div>`).join('')}</div></div>`+
+     tbl('จำแนกตามสถานะ',s.byStatus,x=>ST[x]||esc(x))+tbl('รายวัน (ไม่รวมยกเลิก)',s.byDay,thDate);
+  }).catch(fail);
+}
+const SK=['ClinicName','AM_SLOTS','PM_SLOTS','MaxAdvanceDays','MinAdvanceDays'];
+function loadSettings(){call('adminGetSettings').then(o=>SK.forEach(k=>$('s_'+k).value=o[k]||'')).catch(fail);}
+function saveSettings(){const o={};SK.forEach(k=>o[k]=$('s_'+k).value);call('adminSaveSettings',o).then(()=>toast('บันทึกการตั้งค่าแล้ว',true)).catch(fail);}
+function changePin(){
+  const a=$('np1').value,b=$('np2').value;
+  if(!/^\d{4,8}$/.test(a))return toast('PIN ต้องเป็นตัวเลข 4-8 หลัก',false);
+  if(a!==b)return toast('PIN ที่พิมพ์ทั้งสองครั้งไม่ตรงกัน',false);
+  call('adminChangePin',a).then(()=>{$('np1').value='';$('np2').value='';toast('เปลี่ยนรหัส PIN เรียบร้อยแล้ว',true);}).catch(fail);
+}
+if(TOKEN)start();
+</script></body></html>

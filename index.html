@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8"><title>ThaiMed Queue</title><meta name="viewport" content="width=device-width, initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@1,600&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><script src="config.js"></script></head>
+<body>
+<header class="top">
+ <div class="brand"><svg aria-hidden="true" width="40" height="40" viewBox="0 0 48 48"><path d="M24 5c7 7 7 18 0 26-7-8-7-19 0-26Z" fill="#2e7d46"/><path d="M24 32C13 32 7 26 5 17c10 0 17 4 19 15Z" fill="#7cbd5f"/><path d="M24 32c11 0 17-6 19-15-10 0-17 4-19 15Z" fill="#4c9a49"/><path d="M11 38c8 4 18 4 26 0" stroke="#2e7d46" fill="none" stroke-width="2.5" stroke-linecap="round"/></svg>
+  <div><b class="p">ThaiMed Queue</b><small>ระบบจองคิวบริการแพทย์แผนไทย</small></div></div>
+ <nav class="nav"><button id="n_home" class="on" onclick="go('home')">หน้าแรก</button><button id="n_book" onclick="go('book')">จองคิว</button><button id="n_status" onclick="go('status')">ตรวจสอบนัด</button><a href="admin.html">สำหรับเจ้าหน้าที่</a></nav>
+</header>
+<div class="wrap">
+
+<section id="v_home">
+ <div class="hero"><h1>ดูแลสุขภาพแบบไทย<br>ด้วยภูมิปัญญาไทย</h1><p>“ จองคิวง่าย บริการสะดวก<br>ห่างไกลโรค สุขภาพดีอย่างยั่งยืน ”</p></div>
+ <div class="tiles" id="tiles"></div>
+ <button class="cta" onclick="go('book')"><svg aria-hidden="true" width="48" height="48" viewBox="0 0 40 40" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="8" width="30" height="27" rx="5"/><path d="M5 16h30M13 4v7M27 4v7M12 23h4M18 23h4M24 23h4M12 29h4M18 29h4"/></svg><span>จองคิวรับบริการ<br>คลิกที่นี่</span><span class="ar">›</span></button>
+ <div class="card"><h2>ทำไมต้อง ThaiMed Queue ?</h2>
+  <div class="ck"><i>✓</i>จองได้ง่าย สะดวก ทุกที่ ทุกเวลา</div><div class="ck"><i>✓</i>ลดความแออัด รอคิวน้อยลง</div><div class="ck"><i>✓</i>เข้าถึงบริการแพทย์แผนไทยอย่างทั่วถึง</div></div>
+</section>
+
+<section id="v_book" hidden>
+ <div class="stepper"><div class="st on" id="st1"><i>1</i>เลือกบริการ</div><div class="st" id="st2"><i>2</i>เลือกวันเวลา</div><div class="st" id="st3"><i>3</i>ยืนยันการจอง</div></div>
+ <div id="s1"><div class="card"><h2>เลือกบริการ</h2><div id="cards" class="hint">กำลังโหลด...</div></div></div>
+ <div id="s2" hidden><div class="card"><h2>เลือกวัน</h2><div id="cal"></div><div id="dmsg" class="hint" style="margin-top:8px"></div>
+  <div class="hint" style="margin-top:6px">วันที่เป็นสีเขียวจองได้ ตัวเลขใต้วันคือจำนวนคิวที่เหลือ</div></div>
+  <div class="card"><h2>เลือกเวลา</h2><div id="times" class="chips"><span class="hint">เลือกวันก่อน</span></div></div></div>
+ <div id="s3" hidden><div class="card"><h2>ข้อมูลผู้รับบริการ</h2><div class="sum" id="sum"></div>
+  <label class="f" for="name">ชื่อ-นามสกุล *</label><input class="i" id="name" maxlength="100" autocomplete="name">
+  <label class="f" for="phone">เบอร์โทรศัพท์ *</label><input class="i" id="phone" inputmode="tel" maxlength="12" placeholder="0812345678" autocomplete="tel">
+  <label class="f" for="hn">เลขประจำตัวผู้ป่วย (HN) ถ้ามี</label><input class="i" id="hn" maxlength="20">
+  <label class="f" for="symptom">อาการหรือปัญหาสุขภาพเบื้องต้น</label><textarea class="i" id="symptom" maxlength="500" placeholder="เช่น ปวดเข่าข้างขวา เดินขึ้นบันไดไม่สะดวก"></textarea>
+  <div class="pdpa">ข้อมูลของท่านเป็นข้อมูลส่วนบุคคล ใช้เพื่อการนัดหมายและการให้บริการเท่านั้น เจ้าหน้าที่ที่เกี่ยวข้องเท่านั้นที่เข้าถึงได้ และจะไม่แสดงบนหน้าสาธารณะ</div>
+  <label class="chk"><input type="checkbox" id="consent">ข้าพเจ้ายินยอมให้เก็บและใช้ข้อมูลตามวัตถุประสงค์ข้างต้น</label></div></div>
+ <div id="err" class="msg err" hidden></div>
+ <div class="row2"><button class="btn alt" id="back" onclick="back()" hidden>ย้อนกลับ</button><button class="btn" id="next" onclick="next()">ถัดไป →</button></div>
+</section>
+
+<section id="v_done" hidden><div class="card"><h2>จองคิวเรียบร้อยแล้ว</h2><div class="hint">เลขที่จองของท่าน</div><div class="big" id="bid" style="font-size:40px"></div><p id="bsum"></p>
+ <p class="hint">ไม่ต้องจำเลขที่จองก็ได้ ภายหลังตรวจสอบนัดได้โดยพิมพ์ชื่อ-นามสกุลหรือเบอร์โทรศัพท์ สถานะเริ่มต้นคือ “รอตรวจสอบ” เจ้าหน้าที่จะยืนยันนัดหมายให้อีกครั้ง</p>
+ <button class="btn" style="width:100%" onclick="location.reload()">จองคิวใหม่</button></div></section>
+
+<section id="v_status" hidden>
+ <div class="card"><h2>ตรวจสอบสถานะการจอง</h2>
+  <label class="f" for="q">ชื่อ-นามสกุล หรือ เบอร์โทรศัพท์ที่ใช้จอง</label><input class="i" id="q" placeholder="เช่น 0812345678 หรือ สมชาย ใจดี" onkeydown="if(event.key==='Enter')lookup()">
+  <div class="hint" style="margin-top:6px">ถ้าค้นหาด้วยชื่อ ให้พิมพ์ชื่อและนามสกุลให้ครบ</div>
+  <div id="qerr" class="msg err" hidden></div><button class="btn" style="width:100%;margin-top:12px" onclick="lookup()">ค้นหา</button></div>
+ <div id="qok" class="msg ok" hidden></div>
+ <div id="res"></div>
+ <div id="ap" class="card" hidden><h2 id="apt"></h2>
+  <div id="ap_phone" hidden><label class="f" for="pv">กรอกเบอร์โทรศัพท์ที่ใช้จองเพื่อยืนยันตัวตน</label><input class="i" id="pv" inputmode="tel"><button class="btn" style="width:100%;margin-top:12px" onclick="setPhone()">ยืนยัน</button></div>
+  <div id="ap_conf" hidden><p id="apc"></p><div class="row2"><button class="btn alt" onclick="closeAct()">ไม่ยกเลิก</button><button class="btn" style="background:#a63d2f" onclick="doCancel()">ยืนยันยกเลิก</button></div></div>
+  <div id="ap_res" hidden><div id="rcal"></div><div id="rtimes" class="chips" style="margin-top:10px"></div><div class="row2"><button class="btn alt" onclick="closeAct()">ปิด</button><button class="btn" onclick="doResched()">ยืนยันเปลี่ยนนัด</button></div></div>
+  <div id="apmsg" class="msg err" hidden></div></div>
+</section>
+</div>
+<div class="foot"><img src="logo.png" alt="ตราสัญลักษณ์ รพ.สต.บ้านห้วยผึ้ง"><span id="clinic">โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านห้วยผึ้ง</span></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const API=window.TMQ_API;
+const api=(fn,...a)=>fetch(API,{method:'POST',body:JSON.stringify({fn:fn,args:a})}).then(r=>r.json()).then(j=>{if(!j.ok)throw new Error(String(j.error||'เกิดข้อผิดพลาด').replace(/^(Error|Exception):\s*/,''));return j.data;},()=>{throw new Error('เชื่อมต่อระบบไม่ได้ กรุณาลองใหม่อีกครั้ง');});
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dd=(d,o)=>new Date(d+'T00:00:00').toLocaleDateString('th-TH',o);
+const thDate=d=>dd(d,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const ST={Pending:'รอตรวจสอบ',Confirmed:'ยืนยันแล้ว',Completed:'เข้ารับบริการแล้ว',Cancelled:'ยกเลิก','No-show':'ไม่มาตามนัด'};
+const COL=['#d8e8cc','#f9e6c8','#d9eceb','#d5e6cd','#e5dcf0'];
+const IC={
+ S01:'<circle cx="20" cy="20" r="4.5" fill="#2e7d46"/><path d="M11 20a9 9 0 0 1 9-9M29 20a9 9 0 0 1-9 9" fill="none" stroke="#2e7d46" stroke-width="3" stroke-linecap="round"/><path d="M5 20A15 15 0 0 1 20 5M35 20a15 15 0 0 1-15 15" fill="none" stroke="#6fb25a" stroke-width="3" stroke-linecap="round"/>',
+ S02:'<circle cx="20" cy="24" r="12" fill="#b8803f"/><path d="M20 12V6M16 6h8" stroke="#8a5a26" stroke-width="3" stroke-linecap="round"/><path d="M10 21c6 4 14 4 20 0M9 28c7 4 15 4 22 0" fill="none" stroke="#e2b673" stroke-width="2"/>',
+ S03:'<path d="M6 34C6 18 16 7 34 6c0 17-10 28-28 28Z" fill="#4c9a49"/><path d="M8 32 26 14" stroke="#cfe8c2" stroke-width="2.5" stroke-linecap="round"/>',
+ S04:'<path d="M13 12c-2-3 2-4 0-8M20 12c-2-3 2-4 0-8M27 12c-2-3 2-4 0-8" fill="none" stroke="#6fb25a" stroke-width="2.5" stroke-linecap="round"/><path d="M5 18h30c0 9-6 16-15 16S5 27 5 18Z" fill="#2e7d46"/>',
+ S05:'<path d="M4 8a4 4 0 0 1 4-4h16a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H14l-6 5v-5a4 4 0 0 1-4-4Z" fill="#7b5ea7"/><path d="M20 22h12a4 4 0 0 1 4 4v7l-5-4h-11a4 4 0 0 1-4-4v-1" fill="#b9a2dc"/>'};
+const ico=(id,z)=>`<svg aria-hidden="true" width="${z}" height="${z}" viewBox="0 0 40 40">${IC[id]||IC.S03}</svg>`;
+let S={svcs:[],svc:null,dates:[],slots:[],date:'',time:'',step:1,p:null,res:[],vp:'',bp:false,act:null};
+
+/* ปฏิทินเลือกวัน: วันที่จองได้เป็นปุ่มสีเขียว วันอื่นกดไม่ได้ */
+function makeCal(el,onPick){
+  const c={map:{},sel:'',y:0,m:0,min:0,max:0},p=x=>String(x).padStart(2,'0');
+  c.set=dates=>{c.map={};dates.forEach(d=>c.map[d.date]=d.remaining);c.sel='';
+    if(dates.length){const f=dates[0].date,l=dates[dates.length-1].date;c.y=+f.slice(0,4);c.m=+f.slice(5,7)-1;c.min=+f.slice(0,4)*12+ +f.slice(5,7)-1;c.max=+l.slice(0,4)*12+ +l.slice(5,7)-1;}
+    c.draw();};
+  c.draw=()=>{
+    const f=new Date(c.y,c.m,1),n=new Date(c.y,c.m+1,0).getDate(),cur=c.y*12+c.m;
+    let h=`<div class="calh"><button class="calb" data-n="-1" aria-label="เดือนก่อนหน้า" ${cur<=c.min?'disabled':''}>‹</button><b class="p">${f.toLocaleDateString('th-TH',{month:'long',year:'numeric'})}</b><button class="calb" data-n="1" aria-label="เดือนถัดไป" ${cur>=c.max?'disabled':''}>›</button></div><div class="calg">`;
+    ['อา','จ','อ','พ','พฤ','ศ','ส'].forEach(w=>h+=`<div class="cw">${w}</div>`);
+    for(let i=0;i<f.getDay();i++)h+='<div></div>';
+    for(let d=1;d<=n;d++){const k=`${c.y}-${p(c.m+1)}-${p(d)}`,r=c.map[k];
+      h+=r!=null?`<button class="cl${k===c.sel?' on':''}" data-d="${k}" aria-label="วันที่ ${d} เหลือ ${r} คิว">${d}<small>${r} คิว</small></button>`:`<div class="cx">${d}</div>`;}
+    el.innerHTML=h+'</div>';};
+  el.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;
+    if(b.dataset.n){c.m+=+b.dataset.n;if(c.m<0){c.m=11;c.y--;}if(c.m>11){c.m=0;c.y++;}c.draw();}
+    else if(b.dataset.d){c.sel=b.dataset.d;c.draw();onPick(c.sel);}});
+  return c;
+}
+const cal=makeCal($('cal'),d=>{S.date=d;S.time='';renderTimes();});
+const rcal=makeCal($('rcal'),d=>{S.act.date=d;S.act.time='';renderRTimes();});
+
+function go(v){['home','book','status','done'].forEach(x=>$('v_'+x).hidden=x!==v);['home','book','status'].forEach(x=>$('n_'+x).className=x===v?'on':'');scrollTo(0,0);}
+function showErr(id,m){const e=$(id);e.textContent=m;e.hidden=!m;}
+
+api('getPublicInit').then(r=>{
+  S.svcs=r.services;$('clinic').textContent=r.clinicName||$('clinic').textContent;
+  $('tiles').innerHTML=r.services.map((s,i)=>`<div class="tl" style="background:${COL[i%5]}">${ico(s.id,46)}${esc(s.name)}</div>`).join('');
+  $('cards').className='';
+  $('cards').innerHTML=r.services.length?r.services.map((s,i)=>`<button class="cd" id="c${i}" style="background:${COL[i%5]}" onclick="pick(${i})"><span class="ib">${ico(s.id,36)}</span><span class="tx">${esc(s.name)}<small>${esc(s.desc)}</small></span><span class="rd"></span></button>`).join(''):'ขณะนี้ยังไม่เปิดรับจองบริการ';
+}).catch(e=>$('cards').textContent='โหลดข้อมูลไม่สำเร็จ: '+e.message);
+
+function pick(i){
+  S.svc=S.svcs[i];S.date='';S.time='';
+  S.svcs.forEach((_,k)=>{$('c'+k).classList.toggle('on',k===i);$('c'+k).querySelector('.rd').textContent=k===i?'✓':'';});
+  S.p=api('getOpenDates',S.svc.id).then(d=>{S.dates=d.dates;S.slots=d.slots;});
+}
+function showStep(n){
+  S.step=n;[1,2,3].forEach(i=>{$('s'+i).hidden=i!==n;$('st'+i).className='st'+(i===n?' on':i<n?' dn':'');});
+  $('back').hidden=n===1;$('next').textContent=n===3?'ยืนยันการจอง':'ถัดไป →';showErr('err','');scrollTo(0,0);
+}
+function renderDates(){
+  cal.set(S.dates);S.date='';S.time='';
+  $('dmsg').textContent=S.dates.length?'':'ขณะนี้ไม่มีวันว่างสำหรับบริการนี้ กรุณาติดต่อเจ้าหน้าที่';
+  renderTimes();
+}
+function renderTimes(){
+  $('times').innerHTML=S.date?S.slots.map(t=>`<button class="ch tm${t===S.time?' on':''}" onclick="pickTime('${t}')">${t} น.</button>`).join(''):'<span class="hint">เลือกวันก่อน</span>';
+}
+function pickTime(t){S.time=t;renderTimes();}
+function back(){showStep(S.step-1);}
+function next(){
+  showErr('err','');
+  if(S.step===1){
+    if(!S.svc)return showErr('err','กรุณาเลือกบริการ');
+    $('next').disabled=true;
+    S.p.then(()=>{renderDates();showStep(2);}).catch(e=>showErr('err',e.message)).finally(()=>$('next').disabled=false);
+  }else if(S.step===2){
+    if(!S.date||!S.time)return showErr('err','กรุณาเลือกทั้งวันและเวลา');
+    $('sum').innerHTML=`<b>${esc(S.svc.name)}</b><br>${thDate(S.date)} เวลา ${esc(S.time)} น.`;showStep(3);
+  }else submit();
+}
+function submit(){
+  const d={serviceId:S.svc.id,date:S.date,time:S.time,name:$('name').value,phone:$('phone').value,hn:$('hn').value,symptom:$('symptom').value,consent:$('consent').checked};
+  $('next').disabled=true;$('next').textContent='กำลังบันทึก...';
+  api('createBooking',d).then(r=>{$('bid').textContent=r.bookingId;$('bsum').textContent=r.serviceName+' | '+thDate(r.date)+' เวลา '+r.time+' น.';go('done');})
+   .catch(e=>{showErr('err',e.message);$('next').textContent='ยืนยันการจอง';}).finally(()=>$('next').disabled=false);
+}
+
+/* ตรวจสอบ / เปลี่ยนนัด / ยกเลิก: ค้นหาด้วยชื่อหรือเบอร์โทร */
+const normP=x=>{let d=String(x||'').replace(/\D/g,'');if(d.length===9)d='0'+d;return d;};
+function lookup(){
+  showErr('qerr','');$('qok').hidden=true;closeAct();const q=$('q').value;
+  api('searchBookings',q).then(r=>{S.res=r.items;S.bp=r.byPhone;S.vp=r.byPhone?normP(q):'';renderRes();}).catch(e=>showErr('qerr',e.message));
+}
+function renderRes(){
+  $('res').innerHTML=S.res.length?S.res.map(b=>{const act=b.status==='Pending'||b.status==='Confirmed';return `<div class="card">
+   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="big" style="font-size:24px">${esc(b.bookingId)}</span><span class="badge ${esc(b.status)}">${ST[b.status]||esc(b.status)}</span></div>
+   <p style="margin:8px 0"><b>${esc(b.serviceName)}</b><br>${thDate(b.date)} เวลา ${esc(b.time)} น.<br>ผู้รับบริการ: ${esc(b.name)}</p>
+   ${b.adminNote?`<p class="hint">หมายเหตุจากเจ้าหน้าที่: ${esc(b.adminNote)}</p>`:''}
+   ${act?`<div class="row2"><button class="btn alt" onclick="startAct('resched','${esc(b.bookingId)}')">ขอเปลี่ยนนัด</button><button class="btn alt" style="color:#a63d2f;border-color:#a63d2f" onclick="startAct('cancel','${esc(b.bookingId)}')">ยกเลิกการจอง</button></div>`:''}</div>`;}).join(''):'<div class="card hint">ไม่พบการจอง (แสดงเฉพาะนัดย้อนหลังไม่เกิน 30 วัน) กรุณาตรวจสอบชื่อ-นามสกุลหรือเบอร์โทรศัพท์</div>';
+}
+function actMsg(t){const m=$('apmsg');m.hidden=!t;m.textContent=t||'';}
+function closeAct(){$('ap').hidden=true;S.act=null;}
+function showAct(stage){
+  $('ap').hidden=false;actMsg('');
+  ['phone','conf','res'].forEach(x=>$('ap_'+x).hidden=x!==stage);
+  const b=S.res.find(x=>x.bookingId===S.act.id);
+  $('apt').textContent=(S.act.type==='cancel'?'ยกเลิกการจอง ':'เปลี่ยนนัด ')+S.act.id;
+  if(stage==='conf')$('apc').textContent='ต้องการยกเลิก '+b.serviceName+' '+thDate(b.date)+' เวลา '+b.time+' น. ใช่หรือไม่';
+  $('ap').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function startAct(type,id){S.act={type,id,date:'',time:'',slots:[]};if(S.vp)goAct();else showAct('phone');}
+function setPhone(){const p=normP($('pv').value);if(p.length<9)return actMsg('เบอร์โทรศัพท์ไม่ถูกต้อง');S.vp=p;goAct();}
+function goAct(){
+  const b=S.res.find(x=>x.bookingId===S.act.id);
+  if(S.act.type==='cancel')return showAct('conf');
+  api('getOpenDates',b.serviceId).then(d=>{S.act.slots=d.slots;showAct('res');rcal.set(d.dates);renderRTimes();if(!d.dates.length)actMsg('ขณะนี้ไม่มีวันว่างสำหรับบริการนี้');}).catch(actFail);
+}
+function actFail(e){if(!S.bp)S.vp='';showAct(S.vp?(S.act.type==='cancel'?'conf':'res'):'phone');actMsg(e.message);}
+function renderRTimes(){$('rtimes').innerHTML=S.act.date?S.act.slots.map(t=>`<button class="ch tm${t===S.act.time?' on':''}" onclick="pickRTime('${t}')">${t} น.</button>`).join(''):'<span class="hint">เลือกวันก่อน</span>';}
+function pickRTime(t){S.act.time=t;renderRTimes();}
+function doCancel(){api('cancelBooking',S.act.id,S.vp).then(()=>{closeAct();lookup();setTimeout(()=>{$('qok').hidden=false;$('qok').textContent='ยกเลิกการจองเรียบร้อยแล้ว';},400);}).catch(actFail);}
+function doResched(){
+  if(!S.act.date||!S.act.time)return actMsg('กรุณาเลือกทั้งวันและเวลา');
+  api('rescheduleBooking',S.act.id,S.vp,S.act.date,S.act.time).then(()=>{closeAct();lookup();setTimeout(()=>{$('qok').hidden=false;$('qok').textContent='เปลี่ยนนัดเรียบร้อยแล้ว สถานะกลับเป็นรอตรวจสอบ';},400);}).catch(actFail);
+}
+</script></body></html>
