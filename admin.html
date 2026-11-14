@@ -1,56 +1,69 @@
 <!DOCTYPE html>
-<html lang="th"><head><meta charset="utf-8"><title>ThaiMed Queue — เจ้าหน้าที่</title><meta name="viewport" content="width=device-width, initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@1,600&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><script src="config.js"></script></head>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ThaiMed Queue — เจ้าหน้าที่</title>
+<link href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@1,600&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><script src="config.js"></script></head>
 <body>
-<div id="login" class="card" style="max-width:380px;margin:60px auto">
- <div style="text-align:center"><img class="emb" style="width:64px;height:64px" src="logo.png" alt="ตราสัญลักษณ์ รพ.สต.บ้านห้วยผึ้ง"></div>
- <h2 style="text-align:center;margin-top:8px">ThaiMed Queue — เจ้าหน้าที่</h2>
- <label class="f" for="pin">รหัส PIN</label><input class="i" id="pin" type="password" inputmode="numeric" onkeydown="if(event.key==='Enter')login()">
- <div id="lerr" class="msg err" hidden></div><button class="btn" style="width:100%;margin-top:12px" onclick="login()">เข้าสู่ระบบ</button>
- <p style="text-align:center;margin:12px 0 0"><a href="index.html" style="color:var(--g)">← กลับหน้าประชาชน</a></p>
+<div id="login" class="lg">
+ <div class="card">
+  <img class="emb" style="width:72px;height:72px;margin:0 auto 10px;display:block" src="logo.png" alt="ตราสัญลักษณ์ รพ.สต.บ้านห้วยผึ้ง">
+  <h2 style="margin:0;font-size:22px">ระบบเจ้าหน้าที่</h2><div class="hint" style="margin-bottom:14px">ThaiMed Queue • รพ.สต.บ้านห้วยผึ้ง</div>
+  <label class="f" for="pin" style="text-align:left">รหัส PIN</label>
+  <input class="i pin" id="pin" type="password" inputmode="numeric" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+  <div id="lerr" class="msg err" hidden style="text-align:left"></div>
+  <button class="btn full" style="margin-top:14px" onclick="login()">เข้าสู่ระบบ</button>
+  <p style="margin:16px 0 0"><a href="index.html">← กลับหน้าประชาชน</a></p>
+ </div>
 </div>
 
-<div id="app" class="app" hidden>
- <aside class="side" id="tabs">
-  <div class="lg">ThaiMed Queue</div>
-  <button data-t="bk" class="on">หน้าหลัก / รายการจอง</button><button data-t="sv">บริการและตาราง</button><button data-t="cl">วันปิดให้บริการ</button><button data-t="st">รายงานสถิติ</button><button data-t="se">ตั้งค่า</button>
-  <a href="index.html">ไปหน้าประชาชน</a><button onclick="logout()">ออกจากระบบ</button>
-  <div class="bt"><img class="emb" src="logo.png" alt=""><span>รพ.สต.<br>บ้านห้วยผึ้ง</span></div>
- </aside>
- <main class="main">
-  <div id="toast" class="msg" hidden></div>
+<div id="app" hidden>
+ <div class="atop"><div class="lgo"><img class="emb" src="logo.png" alt=""><div><b>ระบบเจ้าหน้าที่</b><small>ThaiMed Queue</small></div></div>
+  <button onclick="logout()" aria-label="ออกจากระบบ"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></svg></button></div>
+ <div class="ad">
+  <aside class="sidebar"><div class="lgo"><img class="emb" style="width:48px;height:48px" src="logo.png" alt=""><div><b>ThaiMed Queue</b><small>ระบบเจ้าหน้าที่</small></div></div>
+   <div id="snav"></div><div class="sp"></div>
+   <a class="snav" href="index.html">ไปหน้าประชาชน</a><button class="snav" onclick="logout()">ออกจากระบบ</button></aside>
+  <main class="amain">
 
-  <section id="bk"><h1>แดชบอร์ดภาพรวม</h1>
-   <div class="kpis"><div class="k" style="background:#dcebd0"><b id="k0">0</b>รายการที่แสดง</div><div class="k" style="background:#fbe8c0"><b id="k1">0</b>รอตรวจสอบ</div><div class="k" style="background:#dbe8fb"><b id="k2">0</b>ยืนยันแล้ว</div><div class="k" style="background:#e5dcf0"><b id="k3">0</b>เข้ารับบริการแล้ว</div></div>
-   <div class="card"><div class="row">
-    <div><label class="f">วันที่</label><input class="i" type="date" id="fdate"></div>
-    <div><label class="f">สถานะ</label><select class="i" id="fstat"><option value="">ทุกสถานะ</option><option value="Pending">รอตรวจสอบ</option><option value="Confirmed">ยืนยันแล้ว</option><option value="Completed">เข้ารับบริการแล้ว</option><option value="Cancelled">ยกเลิก</option><option value="No-show">ไม่มาตามนัด</option></select></div>
-    <div><button class="btn" style="width:100%" onclick="loadBk()">ค้นหา</button></div><div><button class="btn alt" style="width:100%" onclick="today()">วันนี้</button></div></div></div>
-   <div class="card scroll" style="padding:0"><table><thead><tr><th>เลขที่จอง</th><th>วัน-เวลา</th><th>บริการ</th><th>ผู้รับบริการ</th><th>อาการ</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="bkb"></tbody></table><p id="bkn" class="hint" style="padding:0 12px"></p></div></section>
+   <section id="bk">
+    <div class="ph"><div><h1>รายการจอง</h1><div class="sub" id="dlabel"></div></div></div>
+    <div class="kp" id="kp"></div>
+    <div class="dn"><button class="sq" onclick="shiftDay(-1)" aria-label="วันก่อนหน้า">‹</button><input class="i" type="date" id="fdate" onchange="loadBk()"><button class="sq" onclick="shiftDay(1)" aria-label="วันถัดไป">›</button><button class="sq" style="width:auto;padding:0 14px;font:600 14px 'Prompt'" onclick="today()">วันนี้</button></div>
+    <div class="fl" id="fl"></div>
+    <div class="bl" id="bl"></div>
+   </section>
 
-  <section id="sv" hidden><h1>บริการและตาราง</h1><div class="card hint">ติ๊กวันที่เปิดให้บริการ เลือกช่วงเวลา และกำหนดจำนวนคิวสูงสุดต่อวันของแต่ละบริการ</div>
-   <div id="svl"></div><button class="btn" style="width:100%" onclick="addSvc()">+ เพิ่มบริการใหม่</button></section>
+   <section id="sv" hidden>
+    <div class="ph"><div><h1>บริการและตาราง</h1><div class="sub">เลือกวันที่เปิด ช่วงเวลา และจำนวนคิวสูงสุดต่อวัน</div></div></div>
+    <div id="svl"></div><button class="btn full" onclick="addSvc()">+ เพิ่มบริการใหม่</button>
+   </section>
 
-  <section id="cl" hidden><h1>วันปิดให้บริการ</h1><div class="card"><div class="row">
-    <div><label class="f">วันที่</label><input class="i" type="date" id="cdate"></div>
-    <div><label class="f">เหตุผล</label><input class="i" id="creason" maxlength="100" placeholder="เช่น วันหยุดราชการ อบรมเจ้าหน้าที่"></div>
-    <div><button class="btn" style="width:100%" onclick="addClosed()">ปิดวันนี้</button></div></div></div>
-   <div class="card scroll" style="padding:0"><table><thead><tr><th>วันที่</th><th>เหตุผล</th><th></th></tr></thead><tbody id="clb"></tbody></table></div></section>
+   <section id="cl" hidden>
+    <div class="ph"><div><h1>วันปิดให้บริการ</h1><div class="sub">วันที่ปิดจะไม่แสดงให้ประชาชนจอง</div></div></div>
+    <div class="ac"><div class="g2"><div><label class="f" style="margin-top:0">วันที่</label><input class="i" type="date" id="cdate"></div><div><label class="f" style="margin-top:0">เหตุผล</label><input class="i" id="creason" maxlength="100" placeholder="เช่น วันหยุดราชการ"></div></div><button class="btn full" style="margin-top:12px" onclick="addClosed()">ปิดวันนี้</button></div>
+    <div id="clb"></div>
+   </section>
 
-  <section id="st" hidden><h1>รายงานสถิติ</h1><div class="card"><div class="row"><div><label class="f">เดือน</label><input class="i" type="month" id="smonth"></div><div><button class="btn" style="width:100%" onclick="loadStats()">ดูรายงาน</button></div></div></div>
-   <div id="sres"></div></section>
+   <section id="st" hidden>
+    <div class="ph"><div><h1>รายงานสถิติ</h1></div></div>
+    <div class="dn"><input class="i" type="month" id="smonth" onchange="loadStats()"><button class="sbtn" onclick="loadStats()">ดูรายงาน</button></div>
+    <div id="sres"></div>
+   </section>
 
-  <section id="se" hidden><h1>ตั้งค่า</h1><div class="card">
-    <label class="f">ชื่อคลินิก</label><input class="i" id="s_ClinicName">
-    <label class="f">เวลารอบเช้า (คั่นด้วยจุลภาค เช่น 08:30,09:30)</label><input class="i" id="s_AM_SLOTS">
-    <label class="f">เวลารอบบ่าย</label><input class="i" id="s_PM_SLOTS">
-    <div class="row"><div><label class="f">จองล่วงหน้าได้สูงสุด (วัน)</label><input class="i" id="s_MaxAdvanceDays" inputmode="numeric"></div><div><label class="f">ต้องจองล่วงหน้าอย่างน้อย (วัน)</label><input class="i" id="s_MinAdvanceDays" inputmode="numeric"></div></div>
-    <button class="btn" style="width:100%;margin-top:14px" onclick="saveSettings()">บันทึกการตั้งค่า</button></div>
-   <div class="card"><h2>เปลี่ยนรหัส PIN เจ้าหน้าที่</h2><div class="hint">ตัวเลข 4-8 หลัก ใช้ร่วมกันทุกคน เปลี่ยนแล้วใช้ PIN ใหม่ได้ทันที</div>
-    <div class="row"><div><label class="f" for="np1">PIN ใหม่</label><input class="i" id="np1" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password"></div>
-    <div><label class="f" for="np2">พิมพ์ PIN ใหม่อีกครั้ง</label><input class="i" id="np2" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password"></div></div>
-    <button class="btn" style="width:100%;margin-top:14px" onclick="changePin()">เปลี่ยนรหัส PIN</button></div></section>
- </main>
+   <section id="se" hidden>
+    <div class="ph"><div><h1>ตั้งค่า</h1></div></div>
+    <div class="ac"><label class="f" style="margin-top:0">ชื่อคลินิก</label><input class="i" id="s_ClinicName">
+     <label class="f">เวลารอบเช้า (คั่นด้วยจุลภาค เช่น 08:30,09:30)</label><input class="i" id="s_AM_SLOTS">
+     <label class="f">เวลารอบบ่าย</label><input class="i" id="s_PM_SLOTS">
+     <div class="g2"><div><label class="f">จองล่วงหน้าได้สูงสุด (วัน)</label><input class="i" id="s_MaxAdvanceDays" inputmode="numeric"></div><div><label class="f">ต้องจองล่วงหน้าอย่างน้อย (วัน)</label><input class="i" id="s_MinAdvanceDays" inputmode="numeric"></div></div>
+     <button class="btn full" style="margin-top:16px" onclick="saveSettings()">บันทึกการตั้งค่า</button></div>
+    <div class="ac"><h2 style="margin:0 0 4px;font-size:18px;color:var(--pine)">เปลี่ยนรหัส PIN เจ้าหน้าที่</h2><div class="hint">ตัวเลข 4-8 หลัก ใช้ร่วมกันทุกคน เปลี่ยนแล้วใช้ PIN ใหม่ได้ทันที</div>
+     <div class="g2"><div><label class="f" for="np1">PIN ใหม่</label><input class="i" id="np1" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password"></div><div><label class="f" for="np2">พิมพ์ PIN ใหม่อีกครั้ง</label><input class="i" id="np2" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password"></div></div>
+     <button class="btn full" style="margin-top:14px" onclick="changePin()">เปลี่ยนรหัส PIN</button></div>
+   </section>
+  </main>
+ </div>
+ <nav class="abar" id="abar"></nav>
 </div>
+<div id="toast" class="toast" hidden></div>
 
 <script>
 const $=id=>document.getElementById(id);
@@ -60,47 +73,77 @@ const raw=(fn,...a)=>fetch(API,{method:'POST',body:JSON.stringify({fn:fn,args:a}
 let TOKEN=sessionStorage.getItem('tmq_t')||'';
 const call=(fn,...a)=>raw(fn,TOKEN,...a).catch(e=>{if(/เข้าสู่ระบบใหม่/.test(e.message))logout(true);throw e;});
 const ST={Pending:'รอตรวจสอบ',Confirmed:'ยืนยันแล้ว',Completed:'เข้ารับบริการแล้ว',Cancelled:'ยกเลิก','No-show':'ไม่มาตามนัด'};
-const DN=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+const STRIPE={Pending:'#d9a52b',Confirmed:'#3d7bd9',Completed:'#2e7d46',Cancelled:'#c0583c','No-show':'#7b5ea7'};
+const DN=['อา','จ','อ','พ','พฤ','ศ','ส'];
 const thDate=d=>new Date(d+'T00:00:00').toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-const iso=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
-let tt;function toast(m,ok){const t=$('toast');t.textContent=m;t.className='msg '+(ok?'ok':'err');t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,4000);}
+const pad=x=>String(x).padStart(2,'0');
+const iso=(d=new Date())=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+let tt;function toast(m,ok){const t=$('toast');t.textContent=m;t.className='toast '+(ok?'ok':'err');t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,3500);}
 const fail=e=>toast(e.message,false);
+
+const NAV=[['bk','รายการจอง','<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4M9 15l2 2 4-4"/>'],
+ ['sv','บริการ','<path d="M5 19C5 10 10 5 19 5c0 9-5 14-14 14ZM5 19 14 10"/>'],
+ ['cl','วันปิด','<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4M10 14l4 4M14 14l-4 4"/>'],
+ ['st','สถิติ','<path d="M5 20V10M12 20V4M19 20v-7"/>'],
+ ['se','ตั้งค่า','<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>']];
+const svg=p=>`<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+$('snav').innerHTML=NAV.map(n=>`<button class="snav" data-t="${n[0]}">${svg(n[2])}${n[1]==='บริการ'?'บริการและตาราง':n[1]==='วันปิด'?'วันปิดให้บริการ':n[1]==='สถิติ'?'รายงานสถิติ':n[1]}</button>`).join('');
+$('abar').innerHTML=NAV.map(n=>`<button data-t="${n[0]}">${svg(n[2])}${n[1]}</button>`).join('');
+document.addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(b)showTab(b.dataset.t);});
+function showTab(t){
+  document.querySelectorAll('[data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  ['bk','sv','cl','st','se'].forEach(s=>$(s).hidden=s!==t);
+  ({bk:loadBk,sv:loadSvc,cl:loadClosed,st:loadStats,se:loadSettings})[t]();scrollTo(0,0);
+}
 
 function login(){$('lerr').hidden=true;raw('adminLogin',$('pin').value).then(t=>{TOKEN=t;sessionStorage.setItem('tmq_t',t);start();}).catch(e=>{$('lerr').textContent=e.message;$('lerr').hidden=false;});}
 function logout(expired){TOKEN='';sessionStorage.removeItem('tmq_t');$('app').hidden=true;$('login').hidden=false;$('pin').value='';if(expired===true){$('lerr').textContent='หมดเวลาการใช้งาน กรุณาเข้าสู่ระบบใหม่';$('lerr').hidden=false;}}
-function start(){$('login').hidden=true;$('app').hidden=false;$('fdate').value=iso();$('smonth').value=iso().slice(0,7);loadBk();}
-$('tabs').addEventListener('click',e=>{
-  const t=e.target.dataset&&e.target.dataset.t;if(!t)return;
-  document.querySelectorAll('#tabs button[data-t]').forEach(b=>b.className=b.dataset.t===t?'on':'');
-  ['bk','sv','cl','st','se'].forEach(s=>$(s).hidden=s!==t);
-  ({bk:loadBk,sv:loadSvc,cl:loadClosed,st:loadStats,se:loadSettings})[t]();
-});
+function start(){$('login').hidden=true;$('app').hidden=false;$('fdate').value=iso();$('smonth').value=iso().slice(0,7);showTab('bk');}
 
+/* ---------- รายการจอง ---------- */
+let LIST=[],FS='';
 function today(){$('fdate').value=iso();loadBk();}
+function shiftDay(n){const [y,m,d]=($('fdate').value||iso()).split('-').map(Number);$('fdate').value=iso(new Date(y,m-1,d+n));loadBk();}
 function loadBk(){
-  call('adminGetBookings',{date:$('fdate').value,status:$('fstat').value}).then(l=>{
-    const n=s=>l.filter(b=>b.status===s).length;
-    $('k0').textContent=l.length;$('k1').textContent=n('Pending');$('k2').textContent=n('Confirmed');$('k3').textContent=n('Completed');
-    $('bkn').textContent=l.length?'':'ไม่พบรายการ';
-    $('bkb').innerHTML=l.map(b=>`<tr>
-     <td>${esc(b.id)}</td><td>${thDate(b.date)}<br>${esc(b.time)} น.</td><td>${esc(b.serviceName)}</td>
-     <td>${esc(b.name)}<br>โทร ${esc(b.phone)}${b.hn?'<br>HN '+esc(b.hn):''}</td><td>${esc(b.symptom)||'-'}</td>
-     <td><span class="badge ${esc(b.status)}">${ST[b.status]||esc(b.status)}</span>${b.adminNote?'<br><small>'+esc(b.adminNote)+'</small>':''}${b.resultNote?'<br><small>ผล: '+esc(b.resultNote)+'</small>':''}</td>
-     <td><input class="i" style="height:38px;margin-bottom:4px" id="n_${esc(b.id)}" placeholder="หมายเหตุ / ผลการให้บริการ">
-      <button class="sm ok" onclick="setSt('${esc(b.id)}','Confirmed')">อนุมัติ</button><button class="sm no" onclick="setSt('${esc(b.id)}','Cancelled')">ปฏิเสธ</button>
-      <button class="sm" onclick="setSt('${esc(b.id)}','Completed')">เสร็จสิ้น</button><button class="sm" onclick="setSt('${esc(b.id)}','No-show')">ไม่มาตามนัด</button></td></tr>`).join('');
-  }).catch(fail);
+  const d=$('fdate').value;if(!d)return;
+  $('dlabel').textContent=thDate(d);
+  call('adminGetBookings',{date:d}).then(l=>{LIST=l;renderBk();}).catch(fail);
+}
+function renderBk(){
+  const n=s=>LIST.filter(b=>b.status===s).length;
+  $('kp').innerHTML=[['ทั้งหมด',LIST.length,'#e1efd9'],['รอตรวจสอบ',n('Pending'),'#fbe8c0'],['ยืนยันแล้ว',n('Confirmed'),'#dbe8fb'],['เข้ารับบริการแล้ว',n('Completed'),'#e8dff2']].map(k=>`<div class="kc" style="background:${k[2]}"><b>${k[1]}</b>${k[0]}</div>`).join('');
+  const chips=[['','ทั้งหมด'],['Pending','รอตรวจสอบ'],['Confirmed','ยืนยันแล้ว'],['Completed','เสร็จสิ้น'],['Cancelled','ยกเลิก'],['No-show','ไม่มาตามนัด']];
+  $('fl').innerHTML=chips.map(c=>`<button class="fc${FS===c[0]?' on':''}" onclick="setFS('${c[0]}')">${c[1]}${c[0]?' ('+n(c[0])+')':''}</button>`).join('');
+  const l=FS?LIST.filter(b=>b.status===FS):LIST;
+  $('bl').innerHTML=l.length?l.map(bcard).join(''):`<div class="empty" style="grid-column:1/-1">ไม่มีรายการจอง${FS?' ในสถานะนี้':'ในวันนี้'}</div>`;
+}
+function setFS(s){FS=s;renderBk();}
+function bcard(b){
+  const a=(s,l,c)=>`<button class="ab ${c||''}" onclick="setSt('${esc(b.id)}','${s}')">${l}</button>`;
+  let acts;
+  if(b.status==='Pending')acts=a('Confirmed','อนุมัติ','ok')+a('Cancelled','ปฏิเสธ','no');
+  else if(b.status==='Confirmed')acts=a('Completed','เสร็จสิ้น','ok')+a('No-show','ไม่มาตามนัด')+a('Cancelled','ยกเลิก','no');
+  else acts=a('Pending','กลับเป็นรอตรวจสอบ');
+  return `<article class="bc" style="--c:${STRIPE[b.status]||'#999'}">
+   <div class="bt"><div><div class="tm">${esc(b.time)} น.</div><div class="sv">${esc(b.serviceName)}</div></div><div style="text-align:right"><span class="badge ${esc(b.status)}">${ST[b.status]||esc(b.status)}</span><div class="qid">${esc(b.id)}</div></div></div>
+   <div class="who"><div><b>${esc(b.name)}</b>${b.hn?' <span class="hn">HN '+esc(b.hn)+'</span>':''}</div><a class="tel" href="tel:${esc(b.phone)}">โทร ${esc(b.phone)}</a></div>
+   ${b.symptom?`<div class="sym"><small>อาการเบื้องต้น</small>${esc(b.symptom)}</div>`:''}
+   ${b.adminNote?`<div class="nt">หมายเหตุ: ${esc(b.adminNote)}</div>`:''}${b.resultNote?`<div class="nt">ผลการให้บริการ: ${esc(b.resultNote)}</div>`:''}
+   <input class="i" id="n_${esc(b.id)}" placeholder="หมายเหตุ / ผลการให้บริการ (ถ้ามี)">
+   <div class="acts">${acts}</div></article>`;
 }
 function setSt(id,s){call('adminUpdateStatus',id,s,$('n_'+id).value).then(()=>{toast('อัปเดตสถานะแล้ว',true);loadBk();}).catch(fail);}
 
+/* ---------- บริการ ---------- */
 function svcRow(s){
   const id=s.id||'';
-  return `<div class="card svr" data-id="${esc(id)}"><div class="row"><div><label class="f">ชื่อบริการ</label><input class="i f_name" value="${esc(s.name||'')}"></div><div><label class="f">รายละเอียด</label><input class="i f_desc" value="${esc(s.desc||'')}"></div></div>
-   <label class="f">วันให้บริการ</label><div class="days">${DN.map((n,i)=>`<label><input type="checkbox" class="f_day" value="${i}" ${(s.days||[1,2,3,4,5]).indexOf(i)>=0?'checked':''}>${n}</label>`).join('')}</div>
-   <div class="row"><div><label class="f">ช่วงเวลา</label><select class="i f_period">${[['ALL','ทั้งวัน'],['AM','เฉพาะช่วงเช้า'],['PM','เฉพาะช่วงบ่าย']].map(p=>`<option value="${p[0]}" ${s.period===p[0]?'selected':''}>${p[1]}</option>`).join('')}</select></div>
-   <div><label class="f">จำนวนต่อวัน</label><input class="i f_limit" inputmode="numeric" value="${s.limit==null?5:s.limit}"></div>
-   <div><label class="chk"><input type="checkbox" class="f_active" ${s.active!==false?'checked':''}>เปิดรับจอง</label></div></div>
-   <button class="sm ok" style="margin-top:10px" onclick="saveSvc(this)">บันทึก ${esc(id)}</button></div>`;
+  return `<div class="ac svr" data-id="${esc(id)}">
+   <div class="g2"><div><label class="f" style="margin-top:0">ชื่อบริการ</label><input class="i f_name" value="${esc(s.name||'')}"></div><div><label class="f" style="margin-top:0">รายละเอียด</label><input class="i f_desc" value="${esc(s.desc||'')}"></div></div>
+   <label class="f">วันให้บริการ</label><div class="dp">${DN.map((n,i)=>`<label><input type="checkbox" class="f_day" value="${i}" ${(s.days||[1,2,3,4,5]).indexOf(i)>=0?'checked':''}><span>${n}</span></label>`).join('')}</div>
+   <div class="g2"><div><label class="f">ช่วงเวลา</label><select class="i f_period">${[['ALL','ทั้งวัน'],['AM','เฉพาะช่วงเช้า'],['PM','เฉพาะช่วงบ่าย']].map(p=>`<option value="${p[0]}" ${s.period===p[0]?'selected':''}>${p[1]}</option>`).join('')}</select></div>
+   <div><label class="f">จำนวนคิวต่อวัน</label><input class="i f_limit" inputmode="numeric" value="${s.limit==null?5:s.limit}"></div></div>
+   <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;gap:10px"><label style="display:flex;align-items:center;gap:10px;margin:0;font-weight:600"><span class="sw"><input type="checkbox" class="f_active" ${s.active!==false?'checked':''}><span></span></span>เปิดรับจอง</label>
+   <button class="sbtn" onclick="saveSvc(this)">บันทึก ${esc(id)}</button></div></div>`;
 }
 function loadSvc(){call('adminListServices').then(l=>$('svl').innerHTML=l.map(svcRow).join('')).catch(fail);}
 function addSvc(){$('svl').insertAdjacentHTML('beforeend',svcRow({}));}
@@ -110,20 +153,24 @@ function saveSvc(btn){
    .then(()=>{toast('บันทึกบริการแล้ว',true);loadSvc();}).catch(fail);
 }
 
-function loadClosed(){call('adminListClosed').then(l=>$('clb').innerHTML=l.map(c=>`<tr><td>${thDate(c.date)}</td><td>${esc(c.reason)}</td><td><button class="sm no" onclick="rmClosed('${c.date}')">ลบ</button></td></tr>`).join('')||'<tr><td colspan="3" class="hint">ยังไม่มีวันปิด</td></tr>').catch(fail);}
-function addClosed(){call('adminAddClosed',$('cdate').value,$('creason').value).then(()=>{toast('ปิดวันให้บริการแล้ว',true);loadClosed();}).catch(fail);}
+/* ---------- วันปิด ---------- */
+function loadClosed(){call('adminListClosed').then(l=>$('clb').innerHTML=l.map(c=>`<div class="cr"><div><b>${thDate(c.date)}</b><div class="hint">${esc(c.reason)||'ไม่ระบุเหตุผล'}</div></div><button class="ab no" style="flex:none;min-width:70px" onclick="rmClosed('${c.date}')">ลบ</button></div>`).join('')||'<div class="empty">ยังไม่มีวันปิดให้บริการ</div>').catch(fail);}
+function addClosed(){call('adminAddClosed',$('cdate').value,$('creason').value).then(()=>{toast('ปิดวันให้บริการแล้ว',true);$('creason').value='';loadClosed();}).catch(fail);}
 function rmClosed(d){call('adminRemoveClosed',d).then(()=>{toast('ลบวันปิดแล้ว',true);loadClosed();}).catch(fail);}
 
-function tbl(h,o,fmt){const k=Object.keys(o).sort();return `<div class="card scroll"><h2>${h}</h2><table><tbody>${k.map(x=>`<tr><td>${fmt?fmt(x):esc(x)}</td><td><b>${o[x]}</b></td></tr>`).join('')||'<tr><td class="hint">ไม่มีข้อมูล</td></tr>'}</tbody></table></div>`;}
+/* ---------- สถิติ ---------- */
+function tbl(h,o,fmt){const k=Object.keys(o).sort();return `<div class="ac"><h2 style="margin:0 0 6px;font-size:17px;color:var(--pine)">${h}</h2>${k.map(x=>`<div class="tr"><span>${fmt?fmt(x):esc(x)}</span><b>${o[x]}</b></div>`).join('')||'<div class="hint">ไม่มีข้อมูล</div>'}</div>`;}
 function loadStats(){
   call('adminStats',$('smonth').value).then(s=>{
     const k=Object.keys(s.byService),mx=Math.max(1,...Object.values(s.byService));
-    $('sres').innerHTML=`<div class="kpis"><div class="k" style="background:#dcebd0"><b>${s.total}</b>รายการจองทั้งเดือน</div></div>
-     <div class="card"><h2>จำนวนผู้รับบริการแยกตามบริการ (ไม่รวมยกเลิก)</h2><div class="bars">${k.map(n=>`<div>${s.byService[n]}<i style="height:${Math.round(s.byService[n]/mx*130)}px"></i></div>`).join('')}</div>
-     <div class="bars" style="height:auto;border:0;margin-top:6px">${k.map(n=>`<div style="font-weight:400;color:var(--mut)">${esc(n)}</div>`).join('')}</div></div>`+
+    $('sres').innerHTML=`<div class="kp" style="grid-template-columns:repeat(2,1fr)"><div class="kc" style="background:#e1efd9"><b>${s.total}</b>รายการจองทั้งเดือน</div><div class="kc" style="background:#f8e8c6"><b>${Object.values(s.byService).reduce((a,b)=>a+b,0)}</b>ไม่รวมที่ยกเลิก</div></div>
+     <div class="ac"><h2 style="margin:0 0 12px;font-size:17px;color:var(--pine)">จำนวนผู้รับบริการแยกตามบริการ</h2>${k.length?`<div class="bars">${k.map(n=>`<div>${s.byService[n]}<i style="height:${Math.round(s.byService[n]/mx*130)}px"></i></div>`).join('')}</div>
+     <div class="bl2">${k.map(n=>`<div>${esc(n)}</div>`).join('')}</div>`:'<div class="hint">ไม่มีข้อมูล</div>'}</div>`+
      tbl('จำแนกตามสถานะ',s.byStatus,x=>ST[x]||esc(x))+tbl('รายวัน (ไม่รวมยกเลิก)',s.byDay,thDate);
   }).catch(fail);
 }
+
+/* ---------- ตั้งค่า ---------- */
 const SK=['ClinicName','AM_SLOTS','PM_SLOTS','MaxAdvanceDays','MinAdvanceDays'];
 function loadSettings(){call('adminGetSettings').then(o=>SK.forEach(k=>$('s_'+k).value=o[k]||'')).catch(fail);}
 function saveSettings(){const o={};SK.forEach(k=>o[k]=$('s_'+k).value);call('adminSaveSettings',o).then(()=>toast('บันทึกการตั้งค่าแล้ว',true)).catch(fail);}
